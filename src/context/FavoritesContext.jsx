@@ -1,18 +1,10 @@
 import React, {
-  createContext,
   useCallback,
   useEffect,
   useMemo,
   useState,
 } from "react";
-
-export const FavoritesContext = createContext({
-  favorites: [],
-  isFavorite: () => false,
-  addFavorite: () => {},
-  removeFavorite: () => {},
-  toggleFavorite: () => {},
-});
+import { FavoritesContext } from "./favorites";
 
 const STORAGE_KEY = "favorites";
 
@@ -47,7 +39,9 @@ export function FavoritesProvider({ children }) {
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
-    } catch {}
+    } catch (error) {
+      console.error("Unable to save favorites:", error);
+    }
   }, [favorites]);
 
   // Listen for storage events but **avoid updating if the data didn't change**

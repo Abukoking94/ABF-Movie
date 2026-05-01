@@ -1,7 +1,6 @@
-import { useAuth } from "../context/AuthContext";
+import { useAuth as useAuthContext } from "../context/auth";
 
 // Custom hook to access authentication context easily
 export default function useAuth() {
-  const { user, login, logout } = useAuth();
-  return { user, login, logout };
+  return useAuthContext();
 }

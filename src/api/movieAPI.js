@@ -88,3 +88,13 @@ export const getTVShowVideos = async (id) => {
   const data = await fetchData(`/tv/${id}/videos`);
   return data?.results || [];
 };
+
+export const getMovieWatchProviders = async (id) => {
+  if (!id) return null;
+  return await fetchData(`/movie/${id}/watch/providers`);
+};
+
+export const getTVShowWatchProviders = async (id) => {
+  if (!id) return null;
+  return await fetchData(`/tv/${id}/watch/providers`);
+};

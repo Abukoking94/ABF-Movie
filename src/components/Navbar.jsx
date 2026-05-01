@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { useTheme } from "../context/ThemeContext";
-import { useAuth } from "../context/AuthContext";
-import { HiMenu, HiX } from "react-icons/hi";
+import { Menu, X } from "lucide-react";
+import { useTheme } from "../context/theme";
+import { useAuth } from "../context/auth";
 
 export default function Navbar() {
   const { darkMode, toggleTheme } = useTheme();
@@ -93,7 +93,7 @@ export default function Navbar() {
             onClick={() => setIsOpen(!isOpen)}
             className="text-white text-2xl p-2 focus:outline-none"
           >
-            {isOpen ? <HiX /> : <HiMenu />}
+            {isOpen ? <X /> : <Menu />}
           </button>
         </div>
       </div>

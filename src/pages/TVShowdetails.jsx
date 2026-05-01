@@ -1,16 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getTVShowDetails, getTVShowVideos } from "../api/movieAPI"; // add getTVShowVideos
+import {
+  getTVShowDetails,
+  getTVShowVideos,
+  getTVShowWatchProviders,
+} from "../api/movieAPI";
 import { motion } from "framer-motion";
-import { Star, Calendar, Layers, ListChecks, Film } from "lucide-react";
+import {
+  Star,
+  Calendar,
+  Layers,
+  ListChecks,
+  Film,
+  ExternalLink,
+} from "lucide-react";
+
+const WATCH_REGION = import.meta.env.VITE_WATCH_REGION || "US";
 
 export default function TVShowDetails() {
   const { id } = useParams();
   const [show, setShow] = useState(null);
-  const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [trailerOpen, setTrailerOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [watchProviders, setWatchProviders] = useState(null);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -20,16 +33,18 @@ export default function TVShowDetails() {
         const data = await getTVShowDetails(id);
         setShow(data);
 
-        const videoData = await getTVShowVideos(id);
-        const youtubeVideos =
-          videoData?.results?.filter((v) => v.site === "YouTube") || [];
-        setVideos(youtubeVideos);
+        const [videoData, providerData] = await Promise.all([
+          getTVShowVideos(id),
+          getTVShowWatchProviders(id),
+        ]);
+        const youtubeVideos = videoData.filter((v) => v.site === "YouTube");
 
         const trailerVideo =
           youtubeVideos.find((v) => v.type === "Trailer") ||
           youtubeVideos[0] ||
           null;
         setSelectedVideo(trailerVideo);
+        setWatchProviders(providerData?.results?.[WATCH_REGION] || null);
       } catch (error) {
         console.error("❌ Error fetching TV show details:", error);
       } finally {
@@ -148,6 +163,59 @@ export default function TVShowDetails() {
           </div>
         </motion.div>
       </div>
+
+      {watchProviders && (
+        <section className="bg-gray-900 rounded-2xl p-6 shadow-xl space-y-4">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className="text-2xl font-bold text-white">Where to Watch</h2>
+            {watchProviders.link && (
+              <a
+                href={watchProviders.link}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-red-300 hover:text-red-200"
+              >
+                Open provider page
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            )}
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              ["Stream", watchProviders.flatrate],
+              ["Rent", watchProviders.rent],
+              ["Buy", watchProviders.buy],
+            ]
+              .filter(([, providers]) => providers?.length)
+              .map(([label, providers]) => (
+                <div key={label} className="space-y-3">
+                  <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-400">
+                    {label}
+                  </h3>
+                  <div className="flex flex-wrap gap-3">
+                    {providers.map((provider) => (
+                      <a
+                        key={`${label}-${provider.provider_id}`}
+                        href={watchProviders.link}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-2 rounded-lg bg-gray-800 px-3 py-2 text-sm font-medium text-white hover:bg-gray-700"
+                      >
+                        <img
+                          src={`https://image.tmdb.org/t/p/w92${provider.logo_path}`}
+                          alt=""
+                          className="h-8 w-8 rounded-md object-cover"
+                        />
+                        {provider.provider_name}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ))}
+          </div>
+        </section>
+      )}
 
       {/* Trailer Modal */}
       {trailerOpen && selectedVideo && (

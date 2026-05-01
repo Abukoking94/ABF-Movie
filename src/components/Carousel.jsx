@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import MovieCard from "./MovieCard";
 
@@ -7,14 +7,17 @@ export default function Carousel({ items }) {
   const length = items.length;
   const intervalRef = useRef(null);
 
-  const nextSlide = () => setCurrent((prev) => (prev + 1) % length);
+  const nextSlide = useCallback(
+    () => setCurrent((prev) => (prev + 1) % length),
+    [length]
+  );
   const prevSlide = () => setCurrent((prev) => (prev - 1 + length) % length);
 
   // Auto-play slides every 5s
   useEffect(() => {
     intervalRef.current = setInterval(nextSlide, 5000);
     return () => clearInterval(intervalRef.current);
-  }, []);
+  }, [nextSlide]);
 
   const goToSlide = (index) => {
     setCurrent(index);
