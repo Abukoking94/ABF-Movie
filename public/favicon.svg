@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="ABF Movies logo">
+  <rect width="64" height="64" rx="14" fill="#111827"/>
+  <path d="M10 20h44v30a6 6 0 0 1-6 6H16a6 6 0 0 1-6-6V20Z" fill="#ef4444"/>
+  <path d="M10 14a6 6 0 0 1 6-6h32a6 6 0 0 1 6 6v8H10v-8Z" fill="#f9fafb"/>
+  <path d="M16 8h8l-6 14h-8l6-14Zm18 0h8l-6 14h-8l6-14Zm18 2a6 6 0 0 1 2 4v8h-8l6-12Z" fill="#ef4444"/>
+  <text x="32" y="45" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="800" fill="#ffffff">ABF</text>
+</svg>
